@@ -1,0 +1,298 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Italianno&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+	font-family: "Poppins", sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+	overflow: hidden;
+	background: url('../assets/Newbg.png') center center fixed;
+	background-size: cover;
+}
+
+/* Fog Animation Styles */
+#canvas {
+    width: 100%;
+    height: 320px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    pointer-events: none;
+}
+
+#cont {
+    position: absolute;
+    font-size: 10vw;
+    color: rgb(213 213 213);
+    z-index: 0;
+    margin: auto;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: fit-content;
+    height: fit-content;
+    font-weight: 600;
+    font-family: consolas;
+}
+
+
+
+/* Header Styles */
+.header {
+    position: fixed;
+    top: calc(50vh - 300px - 60px - 40px - 40px);
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-group {
+    width: 211px;
+    height: auto;
+    min-height: 120px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0;
+}
+
+.paisa-text {
+    color: #FFF;
+    font-family: "Iowan Old Style", serif;
+    font-size: 60px;
+    font-style: normal;
+    font-weight: 900;
+    line-height: 1;
+    text-transform: uppercase;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80px;
+}
+
+.money-text {
+    color: #5F1950;
+    text-align: center;
+    font-family: Italianno, cursive;
+    font-size: 50px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1;
+    text-transform: lowercase;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+}
+
+.flipbook {
+    width: 1000px;
+    height: 600px;
+    position: relative;
+    z-index: 30;
+}
+
+.flipbook.closed {
+    margin-left: -500px;
+}
+
+.flipbook.open {
+    margin-left: 0;
+}
+
+.flipbook.back-cover {
+    margin-left: 500px;
+}
+
+.flipbook .hard {
+    color: #fff;
+    font-weight: bold;
+    border: none; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flipbook .hard:nth-child(2) {
+    background: transparent !important;
+}
+
+.flipbook .hard:nth-child(2) img {
+    background: transparent !important;
+    width: 500px !important;
+}
+
+.flipbook .hard img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Reduce page gaps in turn.js */
+.flipbook .turn-page {
+    background: transparent !important;
+}
+
+.flipbook .turn-page-wrapper {
+    background: transparent !important;
+}
+
+/* Override turn.js default spacing */
+.flipbook .turn-page-wrapper .turn-page {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.flipbook .hard small{
+	font-style: italic;
+	font-weight: lighter;
+	opacity: 0.7;
+	font-size: 14px;
+}
+
+.flipbook .page {
+    background: white;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+    gap: 10px;
+}
+
+.page img{
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	margin: 0;
+}
+
+.flipbook .page small{
+	font-size: 14px;
+    margin-bottom: 10px;
+}
+
+/* Instruction Styles */
+.instruction-container {
+    position: fixed;
+    top: calc(50vh + 300px + 60px);
+    left: calc(50% - 250px - 500px);
+    z-index: 1000;
+    transform-origin: left center;
+}
+
+.instruction-container img {
+    max-width: 100%;
+    height: auto;
+    transform: scale(1.5);
+    transform-origin: left center;
+}
+
+/* Credits Styles */
+.credits-container {
+    position: fixed;
+    top: calc(50vh + 300px + 60px);
+    right: calc(50% - 250px - 500px);
+    z-index: 1000;
+    transform-origin: right center;
+}
+
+.credits-container img {
+    max-width: 100%;
+    height: auto;
+    transform: scale(1.5);
+    transform-origin: right center;
+    cursor: pointer;
+}
+
+.credits-container a {
+    text-decoration: none;
+    display: block;
+}
+
+/* Progress Bar Styles */
+.progress-container {
+    position: fixed;
+    top: calc(50vh + 300px + 60px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 500px;
+    height: 51px;
+    z-index: 1000;
+}
+
+.progress-background {
+    position: absolute;
+    backdrop-filter: blur(18.649px);
+    -webkit-backdrop-filter: blur(18.649px);
+    background: rgba(251, 255, 224, 0.32);
+    height: 51px;
+    left: 0;
+    border-radius: 37.299px;
+    top: 0;
+    width: 500px;
+}
+
+.progress-track {
+    position: absolute;
+    background: rgba(253, 253, 253, 0.4);
+    height: 11px;
+    left: 16px;
+    border-radius: 37.299px;
+    top: 20px;
+    width: 467px;
+}
+
+.progress-fill {
+    position: absolute;
+    background: rgba(228, 126, 162, 0.9);
+    height: 11px;
+    left: 16px;
+    border-radius: 37.299px;
+    top: 20px;
+    width: 0;
+    z-index: 10;
+    border: 1px solid rgba(228, 126, 162, 1);
+}
+
+/* Milestone dots */
+.progress-dot {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: #FFE6E2;
+    border-radius: 50%;
+    top: 15px;
+    z-index: 20;
+}
+
+/* Dot positions based on milestones */
+.dot-1 { left: 54.94px; }  /* 2nd right click milestone (step 2) */
+.dot-2 { left: 137.35px; } /* 5th right click milestone (step 5) */
+.dot-3 { left: 219.76px; } /* 8th right click milestone (step 8) */
+.dot-4 { left: 302.17px; } /* 11th right click milestone (step 11) */
+.dot-5 { left: 384.58px; } /* 14th right click milestone (step 14) */
+
