@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/style.css" />
+  <title>Money Archives</title>
+</head>
+
+<body>
+  <!-- Fog Animation -->
+  <div id="canvas"></div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="logo-group">
+      <div class="paisa-text">
+        <div class="money-text">money</div>
+        PAISA
+      </div>
+    </div>
+        </header>
+
+      <!-- Instruction -->
+  <div class="instruction-container">
+    <img src="assets/ui/Instruction.svg" alt="Instruction" />
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="progress-container">
+    <div class="progress-background"></div>
+    <div class="progress-track"></div>
+    <div class="progress-fill" id="progressFill"></div>
+    <!-- Milestone dots -->
+    <div class="progress-dot dot-1"></div>
+    <div class="progress-dot dot-2"></div>
+    <div class="progress-dot dot-3"></div>
+    <div class="progress-dot dot-4"></div>
+    <div class="progress-dot dot-5"></div>
+  </div>
+
+  <!-- Credits -->
+  <div class="credits-container">
+    <a href="https://aditipandeydesign.framer.website/" target="_blank">
+      <img src="assets/ui/frame33.svg" alt="Credits" />
+    </a>
+            </div>
+            
+  <div class="flipbook">
+    <div class="hard">
+      <img src="assets/covers/Top cover.svg" alt="Front Cover" />
+    </div>
+    <div class="hard">
+              <img src="assets/covers/Top inside cover.svg" alt="Front Cover Inside" />
+                </div>
+    <!-- Pages from /src/assets/pages/*.svg (fallback to .png if svg missing) will be appended here by JS -->
+    <div class="hard">
+              <img src="assets/covers/Bottom inside cover.svg" alt="Back Cover Inside" />
+                    </div>
+    <div class="hard">
+              <img src="assets/covers/Bottom cover.svg" alt="Back Cover" />
+                </div>
+            </div>
+            
+  <script src="js/jquery.js"></script>
+  <script src="js/turn.js"></script>
+  <script type="module">
+    // Build pages using SVGs from assets; robust fallback to PNGs and zero-padded names
+    const totalPages = 30;
+    const $book = $(".flipbook");
+
+    // Insert pages right after the first two hard covers
+    const insertIndex = 2; // after two .hard elements
+
+    for (let i = 1; i <= totalPages; i++) {
+      const $page = $("<div></div>");
+      const img = new Image();
+      img.alt = `Page ${i}`;
+      const p2 = String(i).padStart(2, '0');
+      const candidates = [
+        `assets/pages/${p2}.svg`,
+        `assets/pages/${i}.svg`,
+        `assets/pages/${p2}.png`,
+        `assets/pages/${i}.png`
+      ];
+      let idx = 0;
+      img.onerror = () => { idx++; if (idx < candidates.length) img.src = candidates[idx]; };
+      img.src = candidates[idx];
+      $page.append(img);
+      // Append before the last two hard covers
+      const children = $book.children();
+      if (children.length > insertIndex) {
+        $(children[children.length - 2]).before($page);
+      } else {
+        $book.append($page);
+      }
+    }
+
+    $(".flipbook").turn({
+      when: {
+        turning: function(event, page, pageObject) {
+          // Play haptic sound on page turn
+          playPageTurnSound();
+        },
+        turned: function(event, page, pageObject) {
+          // Update flipbook positioning based on state
+          updateFlipbookPosition();
+        }
+      }
+    });
+
+    // Function to update flipbook positioning based on state
+    function updateFlipbookPosition() {
+      const $flipbook = $(".flipbook");
+      const currentPage = $flipbook.turn("page");
+      const totalPages = $flipbook.turn("pages");
+      
+      // Remove all positioning classes first
+      $flipbook.removeClass("closed open back-cover");
+      
+      // Check specific states
+      if (currentPage === 1) {
+        // Front cover - position 500px to the left
+        $flipbook.addClass("closed");
+      } else if (currentPage === totalPages) {
+        // Back cover - position 500px to the right
+        $flipbook.addClass("back-cover");
+      } else {
+        // Open state - center the book
+        $flipbook.addClass("open");
+      }
+    }
+
+    // Initialize position on page load
+    $(document).ready(function() {
+      updateFlipbookPosition();
+    });
+
+    // Progress Bar Tracking - 17 Steps
+    let currentStep = 0;
+    const totalSteps = 17;
+    const trackWidth = 467; // Width of the progress track
+
+    // Function to update progress bar
+    function updateProgressBar() {
+      const progressFill = document.getElementById('progressFill');
+      const stepPercentage = (currentStep / totalSteps) * 100;
+      const fillWidth = (currentStep / totalSteps) * trackWidth;
+      progressFill.style.width = fillWidth + 'px';
+    }
+
+    // Function to increase progress (next step)
+    function increaseProgress() {
+      if (currentStep < totalSteps) {
+        currentStep++;
+        updateProgressBar();
+      }
+    }
+
+    // Function to decrease progress (previous step)
+    function decreaseProgress() {
+      if (currentStep > 0) {
+        currentStep--;
+        updateProgressBar();
+      }
+    }
+
+    // Track keyboard activity - only arrow keys
+    document.addEventListener('keydown', function(e) {
+      if (e.keyCode === 39) { // Right arrow
+        increaseProgress();
+      } else if (e.keyCode === 37) { // Left arrow
+        decreaseProgress();
+      }
+    });
+
+    // Track mouse clicks for trackpad interaction - only within book container
+    document.addEventListener('click', function(e) {
+      // Check if click is within the flipbook container
+      const flipbook = document.querySelector('.flipbook');
+      const flipbookRect = flipbook.getBoundingClientRect();
+      
+      // Check if click is within the flipbook boundaries
+      if (e.clientX >= flipbookRect.left && 
+          e.clientX <= flipbookRect.right && 
+          e.clientY >= flipbookRect.top && 
+          e.clientY <= flipbookRect.bottom) {
+        
+        const windowWidth = window.innerWidth;
+        const clickX = e.clientX;
+        const centerX = windowWidth / 2;
+        
+        if (clickX > centerX) {
+          // Clicked on right side - increase progress
+          increaseProgress();
+        } else {
+          // Clicked on left side - decrease progress
+          decreaseProgress();
+        }
+      }
+    });
+
+    // Initialize progress bar
+    updateProgressBar();
+
+    // Keyboard navigation
+    $(document).keydown(function(e) {
+      switch(e.keyCode) {
+        case 37: // Left arrow
+          $(".flipbook").turn("previous");
+          break;
+        case 39: // Right arrow
+          $(".flipbook").turn("next");
+          break;
+        case 36: // Home key
+          $(".flipbook").turn("page", 1);
+          break;
+        case 35: // End key
+          $(".flipbook").turn("page", $(".flipbook").turn("pages"));
+          break;
+      }
+    });
+
+    // Create audio element for page turn sound
+    const pageTurnAudio = new Audio('assets/Org.mp3');
+    pageTurnAudio.volume = 0.3; // Set volume to 30%
+    
+    // Preload the audio to ensure it's ready
+    pageTurnAudio.load();
+    
+    // Add event listeners for debugging
+    pageTurnAudio.addEventListener('canplaythrough', () => {
+      console.log('Audio loaded successfully');
+    });
+    
+    pageTurnAudio.addEventListener('error', (e) => {
+      console.error('Audio error:', e);
+    });
+    
+    // Function to play page turn sound
+    function playPageTurnSound() {
+      // Haptic feedback
+      if (navigator.vibrate) {
+        navigator.vibrate(50); // 50ms vibration
+      }
+      
+      // Play custom audio file
+      try {
+        pageTurnAudio.currentTime = 0; // Reset to beginning
+        const playPromise = pageTurnAudio.play();
+        
+        if (playPromise !== undefined) {
+          playPromise.then(() => {
+            console.log('Audio played successfully');
+          }).catch(error => {
+            console.log("Audio playback failed:", error);
+            // Fallback to synthesized sound if custom audio fails
+            playSynthesizedSound();
+          });
+        }
+      } catch (error) {
+        console.log("Audio not supported, using vibration only");
+        playSynthesizedSound();
+      }
+    }
+    
+    // Fallback synthesized sound
+    function playSynthesizedSound() {
+      try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
+        
+        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.1);
+      } catch (error) {
+        console.log("Synthesized audio also failed");
+      }
+    }
+  </script>
+
+  <!-- Fog Animation Script -->
+  <script>
+    let canvas = document.getElementById("canvas");
+    class Fog {
+        constructor(x, y, tamanho, direction, velocity) {
+            this.x = x;
+            this.y = y;
+            this.width = tamanho.w;
+            this.height = tamanho.h;
+            this.me = document.createElement("div");
+            this.direction = direction;
+            this.velocity = velocity;
+        }
+        create() {
+            this.me.style.width = this.width + "px";
+            this.me.style.height = this.height + "px";
+            this.me.style.backgroundColor = "#ffffff";
+            this.me.style.position = "absolute";
+            this.me.style.opacity = 0.7;
+            this.me.style.filter = "blur(40px)";
+            canvas.appendChild(this.me);
+            this.me.style.borderRadius = "120%";
+        }
+        animation() {
+            this.me.style.left = this.x + "px";
+            this.me.style.top = this.y + "px";
+            switch (this.direction) {
+                case 0:
+                    this.x -= this.velocity;
+                    if (this.x + this.width < 0) {
+                        this.x = canvas.clientWidth + this.width;
+                    }
+                    break;
+                case 1:
+                    this.x += this.velocity;
+                    if (this.x + this.width > canvas.width) {
+                        this.me.style.left = -this.width + "px";
+                    }
+                    break;
+            }
+        }
+    }
+    function CreateNeb() {
+        array?.forEach((ele) => {
+            ele.create();
+            ele.animation();
+        });
+        requestAnimationFrame(CreateNeb);
+    }
+    const array = [
+        new Fog(200, 200, { w: 200, h: 200 }, 0, 0.5),
+        new Fog(600, 120, { w: 100, h: 150 }, 0, 0.6),
+        new Fog(70, 140, { w: 230, h: 210 }, 0, 0.7),
+        new Fog(600, 20, { w: 40, h: 30 }, 0, 0.4),
+        new Fog(300, 200, { w: 200, h: 200 }, 0, 0.5),
+        new Fog(400, 120, { w: 70, h: 90 }, 0, 0.6),
+        new Fog(10, 140, { w: 230, h: 210 }, 0, 0.7),
+        new Fog(0, 20, { w: 100, h: 100 }, 0, 0.4),
+        // Additional fog elements for denser effect
+        new Fog(800, 180, { w: 180, h: 160 }, 0, 0.5),
+        new Fog(950, 80, { w: 120, h: 140 }, 0, 0.6),
+        new Fog(1100, 160, { w: 200, h: 180 }, 0, 0.7),
+        new Fog(1250, 40, { w: 80, h: 60 }, 0, 0.4),
+        new Fog(1400, 200, { w: 160, h: 200 }, 0, 0.5),
+        new Fog(1550, 100, { w: 90, h: 110 }, 0, 0.6),
+        new Fog(1700, 140, { w: 220, h: 190 }, 0, 0.7),
+        new Fog(1850, 60, { w: 70, h: 80 }, 0, 0.4)
+    ];
+    CreateNeb();
+  </script>
+
+</body>
+
+</html>
