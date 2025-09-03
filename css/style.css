@@ -422,7 +422,8 @@ body {
     .progress-container,
     .keys-instruction-container,
     .logo-text-container,
-    .flipbook {
+    .flipbook,
+    #loading-overlay {
         display: none !important;
     }
 
@@ -439,6 +440,7 @@ body {
         overflow-x: hidden;
         padding: 0;
         box-sizing: border-box;
+        justify-content: flex-start;
     }
 
     /* Mobile Header */
@@ -448,14 +450,16 @@ body {
         align-items: center;
         gap: 0;
         width: 100%;
-        margin-bottom: 40px;
+        margin: 0;
+        flex-shrink: 0;
+        margin-bottom: 16px;
     }
 
     .mobile-logo-group {
         width: 100%;
         max-width: 211px;
         height: auto;
-        min-height: 120px;
+        min-height: 60px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -478,7 +482,7 @@ body {
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        min-height: 80px;
+        min-height: 40px;
     }
 
     .mobile-money-text {
@@ -499,6 +503,19 @@ body {
         z-index: 2;
     }
 
+    /* Mobile Content Container (Top Cover + Note) */
+    .mobile-content-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        width: 100%;
+        max-width: 400px;
+        flex-shrink: 0;
+        margin: 0;
+        margin-bottom: 16px;
+    }
+
     /* Mobile Top Cover */
     .mobile-top-cover {
         width: 100%;
@@ -507,7 +524,8 @@ body {
         display: flex;
         justify-content: center;
         align-items: center;
-        margin-bottom: 16px;
+        margin: 0;
+        flex-shrink: 0;
     }
 
     .mobile-top-cover img {
@@ -524,7 +542,8 @@ body {
         width: 100%;
         max-width: 400px;
         text-align: center;
-        margin-bottom: 40px;
+        margin: 0;
+        flex-shrink: 0;
     }
 
     .mobile-message h2 {
@@ -553,6 +572,8 @@ body {
         gap: 8px;
         width: 100%;
         max-width: 200px;
+        margin: 0;
+        flex-shrink: 0;
     }
 
     .mobile-logo-text img {
