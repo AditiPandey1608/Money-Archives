@@ -146,9 +146,6 @@
       }, 500);
     }
     
-    // Auto-hide loading after 3 seconds (simulating content load)
-    setTimeout(hideLoading, 3000);
-    
     // Build pages using SVGs from assets; robust fallback to PNGs and zero-padded names
     const totalPages = 30;
     const $book = $(".flipbook");
@@ -180,18 +177,52 @@
       }
     }
 
-    $(".flipbook").turn({
-      when: {
-        turning: function(event, page, pageObject) {
-          // Play haptic sound on page turn
-          playPageTurnSound();
-        },
-        turned: function(event, page, pageObject) {
-          // Update flipbook positioning based on state
-          updateFlipbookPosition();
+    // Initialize flipbook only after all images load
+    function initFlipbook() {
+      if ($(".flipbook").data("initialized")) return;
+      $(".flipbook").turn({
+        when: {
+          turning: function(event, page, pageObject) {
+            playPageTurnSound();
+          },
+          turned: function(event, page, pageObject) {
+            updateFlipbookPosition();
+          }
         }
-      }
+      });
+      $(".flipbook").data("initialized", true);
+      updateFlipbookPosition();
+      hideLoading();
+    }
+
+    // Wait for all images (covers + pages) to load
+    function waitForImagesThenInit() {
+      const imgs = document.querySelectorAll('.flipbook img');
+      if (imgs.length === 0) { initFlipbook(); return; }
+      let remaining = imgs.length;
+      const done = () => { remaining--; if (remaining <= 0) initFlipbook(); };
+      imgs.forEach(img => {
+        if (img.complete) {
+          done();
+        } else {
+          img.addEventListener('load', done, { once: true });
+          img.addEventListener('error', done, { once: true });
+        }
+      });
+    }
+
+    // Fallback: ensure loader hides even if some images hang
+    window.addEventListener('load', () => {
+      // Give images a short grace period, then proceed
+      setTimeout(() => {
+        if (!$(".flipbook").data("initialized")) {
+          initFlipbook();
+        }
+      }, 1500);
     });
+
+    // Kick off image wait
+    waitForImagesThenInit();
 
     // Function to update flipbook positioning based on state
     function updateFlipbookPosition() {
