@@ -322,6 +322,21 @@ body {
     max-width: 200px;
 }
 
+.logo-text a {
+    color: inherit;
+    text-decoration: none;
+    -webkit-text-stroke-width: inherit;
+    -webkit-text-stroke-color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    font-style: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    text-align: inherit;
+    margin: inherit;
+    white-space: inherit;
+    max-width: inherit;
+}
 
 
 /* Progress Bar Styles */
@@ -392,11 +407,13 @@ body {
     body {
         height: 100vh;
         width: 100vw;
-        overflow: auto;
+        overflow: hidden;
         background: url('../assets/Newbg.png') center center fixed;
         background-size: cover;
         display: block;
-        padding: 48px 16px;
+        padding: 32px 16px;
+        box-sizing: border-box;
+        min-height: 100vh;
     }
 
     /* Hide desktop elements on mobile */
@@ -417,6 +434,11 @@ body {
         gap: 0;
         width: 100%;
         max-width: 100%;
+        height: calc(100vh - 64px);
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 0;
+        box-sizing: border-box;
     }
 
     /* Mobile Header */
