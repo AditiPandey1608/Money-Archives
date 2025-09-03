@@ -5,10 +5,71 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="css/style.css" />
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/ui/Logo window.svg" />
+  <link rel="icon" type="image/png" href="assets/ui/Logo.png" />
+  
+  <!-- Open Graph Meta Tags for Social Sharing -->
+  <meta property="og:title" content="Money Archives - Bookflip" />
+  <meta property="og:description" content="Explore the interactive flipbook experience with Money Archives" />
+  <meta property="og:image" content="assets/ui/Share link.svg" />
+  <meta property="og:url" content="" />
+  <meta property="og:type" content="website" />
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Money Archives - Bookflip" />
+  <meta name="twitter:description" content="Explore the interactive flipbook experience with Money Archives" />
+  <meta name="twitter:image" content="assets/ui/Share link.svg" />
+  
   <title>Money Archives</title>
 </head>
 
 <body>
+  <!-- Mobile Layout for Small Screens (320px - 480px) -->
+  <div class="mobile-container">
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+      <div class="mobile-logo-group">
+        <div class="mobile-paisa-text">
+          <div class="mobile-money-text">money</div>
+          PAISA
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Top Cover -->
+    <div class="mobile-top-cover">
+      <img src="assets/covers/Top cover.svg" alt="Top Cover" />
+    </div>
+
+    <!-- Mobile Message -->
+    <div class="mobile-message">
+      <h2>YO!</h2>
+      <p>This site looks way better on desktop. Hop on to a bigger screen to have a better experience.</p>
+    </div>
+
+    <!-- Mobile Logo with Text -->
+    <div class="mobile-logo-text">
+      <img src="assets/ui/Logo.svg" alt="Logo" />
+      <p>Vibe coded by yours truly</p>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div id="loading-overlay">
+    <div class="loading-container">
+      <div class="rotating-logo-video">
+        <video autoplay muted loop>
+          <source src="assets/ui/Rotating logo.mov" type="video/quicktime">
+          <source src="assets/ui/Rotating logo.mov" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </div>
+  </div>
+
   <!-- Fog Animation -->
   <div id="canvas"></div>
 
@@ -22,10 +83,7 @@
     </div>
         </header>
 
-      <!-- Instruction -->
-  <div class="instruction-container">
-    <img src="assets/ui/Instruction.svg" alt="Instruction" />
-  </div>
+
 
   <!-- Progress Bar -->
   <div class="progress-container">
@@ -40,12 +98,17 @@
     <div class="progress-dot dot-5"></div>
   </div>
 
-  <!-- Credits -->
-  <div class="credits-container">
-    <a href="https://aditipandeydesign.framer.website/" target="_blank">
-      <img src="assets/ui/frame33.svg" alt="Credits" />
-    </a>
-            </div>
+  <!-- Component 1: Arrow Keys Instruction -->
+  <div class="keys-instruction-container">
+    <img src="assets/ui/keys.svg" alt="Arrow Keys" />
+    <p class="keys-text">Use your arrow keys to flip through the book</p>
+  </div>
+
+  <!-- Component 2: Logo with Text -->
+  <div class="logo-text-container">
+                <img src="assets/ui/Logo.svg" alt="Logo" />
+    <p class="logo-text">Vibe coded by yours truly</p>
+  </div>
             
   <div class="flipbook">
     <div class="hard">
@@ -66,6 +129,20 @@
   <script src="js/jquery.js"></script>
   <script src="js/turn.js"></script>
   <script type="module">
+    // Loading State Management
+    const loadingOverlay = document.getElementById('loading-overlay');
+    
+    // Hide loading overlay after content loads
+    function hideLoading() {
+      loadingOverlay.classList.add('hidden');
+      setTimeout(() => {
+        loadingOverlay.style.display = 'none';
+      }, 500);
+    }
+    
+    // Auto-hide loading after 3 seconds (simulating content load)
+    setTimeout(hideLoading, 3000);
+    
     // Build pages using SVGs from assets; robust fallback to PNGs and zero-padded names
     const totalPages = 30;
     const $book = $(".flipbook");
