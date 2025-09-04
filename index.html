@@ -71,7 +71,6 @@
           Your browser does not support the video tag.
         </video>
       </div>
-      <div class="loading-text">Loading... 0%</div>
     </div>
   </div>
 
@@ -139,12 +138,60 @@
     // Loading State Management
     const loadingOverlay = document.getElementById('loading-overlay');
     
+    // Background Image Preloading for instant display
+    function preloadBackground() {
+      const bgImg = new Image();
+      
+      // Track background loading progress
+      let progress = 0;
+      const progressInterval = setInterval(() => {
+        progress += Math.random() * 15; // Simulate progress
+        if (progress > 90) progress = 90; // Don't go to 100% until actually loaded
+      }, 200);
+      
+      bgImg.onload = function() {
+        clearInterval(progressInterval);
+        
+        // Create a smooth fade-in effect for background
+        const body = document.body;
+        
+        // First, set the background image with 0 opacity
+        body.style.backgroundImage = 'url(assets/Newbg.png)';
+        body.style.opacity = '0';
+        
+        // Then fade in smoothly
+        setTimeout(() => {
+          body.style.transition = 'opacity 0.3s ease-in-out'; // Reduced from 1s to 0.3s
+          body.style.opacity = '1';
+          
+          // Hide loading state ONLY after background is fully visible
+          setTimeout(() => {
+            console.log('Background fully loaded and visible - hiding loading state');
+            // Now we can proceed with flipbook loading
+            waitForImagesThenInit();
+          }, 300); // Reduced from 1000ms to 300ms
+        }, 100);
+        
+        console.log('Background image loaded successfully');
+      };
+      bgImg.onerror = function() {
+        clearInterval(progressInterval);
+        console.log('Background image failed to load, using fallback color');
+        // Even if background fails, proceed with flipbook loading
+        waitForImagesThenInit();
+      };
+      bgImg.src = 'assets/Newbg.png';
+    }
+    
+    // Start preloading background immediately
+    preloadBackground();
+    
     // Hide loading overlay after content loads
     function hideLoading() {
       loadingOverlay.classList.add('hidden');
       setTimeout(() => {
         loadingOverlay.style.display = 'none';
-      }, 500);
+      }, 200); // Reduced from 500ms to 200ms
     }
     
     // Build pages using SVGs from assets; robust fallback to PNGs and zero-padded names
@@ -201,23 +248,25 @@
       const imgs = document.querySelectorAll('.flipbook img');
       if (imgs.length === 0) { initFlipbook(); return; }
       
-      // Show book after 70% of images load (faster user experience)
-      const requiredImages = Math.ceil(imgs.length * 0.7);
+      // Show book after 50% of images load (faster user experience)
+      const requiredImages = Math.ceil(imgs.length * 0.5); // Reduced from 0.7 to 0.5
       let loadedImages = 0;
+      
+      // Prioritize critical images (first 5 pages + covers) for faster display
+      const criticalImages = Math.min(7, imgs.length); // First 7 images (covers + first few pages)
       
       // Update loading progress
       const updateLoadingProgress = () => {
         const progress = Math.min((loadedImages / imgs.length) * 100, 100);
-        const loadingText = document.querySelector('.loading-text');
-        if (loadingText) {
-          loadingText.textContent = `Loading... ${Math.round(progress)}%`;
-        }
+        // Loading text removed - no more text updates
       };
       
       const done = () => { 
         loadedImages++; 
         updateLoadingProgress();
-        if (loadedImages >= requiredImages) {
+        
+        // Show book faster if critical images are loaded
+        if (loadedImages >= criticalImages || loadedImages >= requiredImages) {
           initFlipbook();
         }
       };
@@ -231,17 +280,17 @@
         }
       });
       
-      // Fallback: show book after 3 seconds max even if images are slow
+      // Fallback: show book after 1.5 seconds max even if images are slow
       setTimeout(() => {
         if (!$(".flipbook").data("initialized")) {
           console.log("Progressive loading timeout - showing book with available images");
           initFlipbook();
         }
-      }, 3000);
+      }, 1500); // Reduced from 3000ms to 1500ms
     }
 
-    // Kick off progressive loading
-    waitForImagesThenInit();
+    // Progressive loading will be started after background image loads
+    // waitForImagesThenInit();
 
     // Function to update flipbook positioning based on state
     function updateFlipbookPosition() {
