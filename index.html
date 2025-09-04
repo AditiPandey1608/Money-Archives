@@ -71,6 +71,7 @@
           Your browser does not support the video tag.
         </video>
       </div>
+      <div class="loading-text">Loading... 0%</div>
     </div>
   </div>
 
@@ -195,12 +196,32 @@
       hideLoading();
     }
 
-    // Wait for all images (covers + pages) to load
+    // Progressive loading strategy - show book faster
     function waitForImagesThenInit() {
       const imgs = document.querySelectorAll('.flipbook img');
       if (imgs.length === 0) { initFlipbook(); return; }
-      let remaining = imgs.length;
-      const done = () => { remaining--; if (remaining <= 0) initFlipbook(); };
+      
+      // Show book after 70% of images load (faster user experience)
+      const requiredImages = Math.ceil(imgs.length * 0.7);
+      let loadedImages = 0;
+      
+      // Update loading progress
+      const updateLoadingProgress = () => {
+        const progress = Math.min((loadedImages / imgs.length) * 100, 100);
+        const loadingText = document.querySelector('.loading-text');
+        if (loadingText) {
+          loadingText.textContent = `Loading... ${Math.round(progress)}%`;
+        }
+      };
+      
+      const done = () => { 
+        loadedImages++; 
+        updateLoadingProgress();
+        if (loadedImages >= requiredImages) {
+          initFlipbook();
+        }
+      };
+      
       imgs.forEach(img => {
         if (img.complete) {
           done();
@@ -209,19 +230,17 @@
           img.addEventListener('error', done, { once: true });
         }
       });
-    }
-
-    // Fallback: ensure loader hides even if some images hang
-    window.addEventListener('load', () => {
-      // Give images a short grace period, then proceed
+      
+      // Fallback: show book after 3 seconds max even if images are slow
       setTimeout(() => {
         if (!$(".flipbook").data("initialized")) {
+          console.log("Progressive loading timeout - showing book with available images");
           initFlipbook();
         }
-      }, 1500);
-    });
+      }, 3000);
+    }
 
-    // Kick off image wait
+    // Kick off progressive loading
     waitForImagesThenInit();
 
     // Function to update flipbook positioning based on state
