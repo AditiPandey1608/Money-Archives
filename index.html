@@ -64,8 +64,12 @@
   <!-- Loading State -->
   <div id="loading-overlay">
     <div class="loading-container">
-      <div class="rotating-logo-css">
-        <img src="assets/ui/Logo.svg" alt="Logo" class="rotating-logo" />
+      <div class="rotating-logo-video">
+        <video autoplay muted loop>
+          <source src="assets/ui/Rotating logo.mov" type="video/quicktime">
+          <source src="assets/ui/Rotating logo.mov" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
       </div>
       <div class="loading-text">Loading... 0%</div>
     </div>
@@ -235,22 +239,6 @@
         }
       }, 3000);
     }
-
-    // Preload background image for faster appearance
-    function preloadBackground() {
-      const bgImg = new Image();
-      bgImg.onload = () => {
-        console.log("Background image loaded successfully");
-        // Background will now appear smoothly due to CSS transition
-      };
-      bgImg.onerror = () => {
-        console.log("Background image failed to load, using fallback color");
-      };
-      bgImg.src = 'assets/Newbg_optimized.png';
-    }
-
-    // Start background preloading immediately
-    preloadBackground();
 
     // Kick off progressive loading
     waitForImagesThenInit();

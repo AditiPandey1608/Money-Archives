@@ -10,16 +10,14 @@
 }
 
 body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', sans-serif;
-    background: #DEACB8; /* Fallback color while background loads */
-    background-image: url('../assets/Newbg_optimized.png');
-    background-position: center center;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    background-size: cover;
-    transition: background-image 0.3s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+	overflow: hidden;
+	background: url('../assets/Newbg.png') center center fixed;
+	background-size: cover;
 }
 
 /* Loading State Styles */
@@ -49,7 +47,7 @@ body {
     gap: 30px;
 }
 
-.rotating-logo-css {
+.rotating-logo-video {
     width: 200px;
     height: 200px;
     display: flex;
@@ -63,49 +61,17 @@ body {
     overflow: hidden;
 }
 
-.rotating-logo {
-    width: 200px;
-    height: 200px;
-    animation: rotate 2s linear infinite;
-    -webkit-animation: rotate 2s linear infinite;
-    -moz-animation: rotate 2s linear infinite;
+.rotating-logo-video video {
+    width: 220px;
+    height: 220px;
+    object-fit: cover;
+    box-shadow: none;
     filter: none;
     border-radius: 0;
     border: none;
     outline: none;
     -webkit-border-radius: 0;
     -moz-border-radius: 0;
-}
-
-@keyframes rotate {
-    from {
-        transform: rotate(0deg);
-        -webkit-transform: rotate(0deg);
-        -moz-transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-        -webkit-transform: rotate(360deg);
-        -moz-transform: rotate(360deg);
-    }
-}
-
-@-webkit-keyframes rotate {
-    from {
-        -webkit-transform: rotate(0deg);
-    }
-    to {
-        -webkit-transform: rotate(360deg);
-    }
-}
-
-@-moz-keyframes rotate {
-    from {
-        -moz-transform: rotate(0deg);
-    }
-    to {
-        -moz-transform: rotate(360deg);
-    }
 }
 
 .loading-text {
@@ -452,7 +418,7 @@ body {
         height: 100vh;
         width: 100vw;
         overflow: hidden;
-        background: url('../assets/Newbg_optimized.png') center center fixed;
+        background: url('../assets/Newbg.png') center center fixed;
         background-size: cover;
         display: block;
         padding: 32px 16px;
